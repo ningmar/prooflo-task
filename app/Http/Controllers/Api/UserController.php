@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use App\Utils\TableDataUtil;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -10,32 +14,39 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     *
      */
     public function index()
     {
-        //
+        $model = new User();
+
+        $data = TableDataUtil::table($model);
+
+        return UserResource::collection($data)
+            ->response()
+            ->setStatusCode(200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
-        //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(UserRequest $userRequest)
     {
-        //
+        User::create([
+            'name' => $userRequest->get('name'),
+            'email' => $userRequest->get('email'),
+            'password' => bcrypt($userRequest->get('password')),
+            'mobile_number' => $userRequest->get('mobile_number'),
+            'gender' => $userRequest->get('gender'),
+            'dob' => $userRequest->get('dob')
+        ]);
+
+
+        return response()->json([
+            'message' => 'created Successfully'
+        ]);
     }
 
     /**
@@ -60,16 +71,22 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(UserRequest $userRequest, $id)
     {
-        //
+        $user = User::findorfail($id);
+
+        $user->update([
+            'name' => $userRequest->get('name'),
+            'email' => $userRequest->get('email'),
+            'password' => bcrypt($userRequest->get('password')),
+            'mobile_number' => $userRequest->get('mobile_number'),
+            'gender' => $userRequest->get('gender'),
+            'dob' => $userRequest->get('dob')
+        ]);
+
+        return response()->json([
+            'message' => 'updated successfully'
+        ]);
     }
 
     /**
@@ -80,6 +97,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findorfail($id);
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Deleted Successfully'
+        ],200);
     }
 }
