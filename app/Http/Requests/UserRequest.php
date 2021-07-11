@@ -29,8 +29,8 @@ class UserRequest extends FormRequest
             'email' => 'required',
             'password' => 'required',
             'mobile_number' => 'required',
-            'gender' => ['required',Rule::in(['first-zone', 'second-zone'])],
-            'dob'
+            'gender' => ['required',Rule::in(['MALE', 'FEMALE', 'OTHER'])],
+            'dob' => 'required|date'
         ];
     }
 }

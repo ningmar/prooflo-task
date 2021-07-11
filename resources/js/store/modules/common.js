@@ -11,7 +11,7 @@ function initialState() {
             page: 1,
             rowsNumber: 0,
             descending: false,
-            itemsPerPage: 25,
+            itemsPerPage: 10,
         },
         totalNumber: 0,
         filters: {},
@@ -20,7 +20,9 @@ function initialState() {
         links: {
             next: null,
             prev: null
-        }
+        },
+        showError: false,
+        showSuccess: false,
     }
 }
 
@@ -32,83 +34,89 @@ const getters = {
     query: state => state.query,
     model: state => state.model,
     totalNumber: state => state.totalNumber,
+    showError: state => state.showError,
+    showSuccess: state => state.showSuccess
 
 };
 
 const actions = {
-    async getAll({commit, state}) {
-        commit('setLoading', true);
-        let pagination = state.serverPagination;
-        let serverParams = {
-            paginate: true,
-            page: pagination.page,
-            rowsPerPage: pagination.itemsPerPage,
-            query: state.query,
-            sortBy: pagination.sortBy ? pagination.sortBy[0] : null,
-            descending: pagination.sortDesc ? pagination.sortDesc[0] : null,
-            with_role: true
-        };
-        serverParams = {...serverParams, ...state.filters};
-        Http.get(`/${state.model}`, {
-            params: serverParams
-        }).then(response => {
-            commit('setAll', response.data.data);
-            commit('setTotalNumber', response.data.meta.total);
-            commit('setLinks', response.data.links)
-        }).finally(() => {
-            commit('setLoading', false)
-        })
-    },
 
-    show({commit, state}) {
-        commit('setLoading', true);
+    fetchPaged({commit, state}) {
+        commit("setLoading", true);
+        let pagination = state.serverPagination;
+        let query = state.query;
+
         return new Promise((resolve, reject) => {
-            Http.get( `/${state.model}/${state.id}`)
-                .then(response => {
-                    commit('setLoading', false);
-                    resolve(response)
+            Http.get('api/'+
+                    state.model +
+                    "?page=" +
+                    (pagination.page - 1) +
+                    "&rowsPerPage=" +
+                    pagination.itemsPerPage +
+                    "&" +
+                    "&query=" +
+                    query
+                )
+                .then(res => {
+                    commit("setLoading", false);
+                    let response = res.data;
+
+                    if (response.data) {
+                        commit("setAll", response.data);
+                        commit("setTotalNumber", response.meta.total);
+                        commit("setTotalPage", response.meta.last_page);
+                    }
+                    resolve(res);
                 })
                 .catch(error => {
-                    commit('setLoading', false);
-                    reject(error)
+                    reject(error);
                 })
-
-        })
+                .finally(() => {
+                    commit("setLoading", false);
+                });
+        });
     },
+
 
     async create({commit, state}) {
         commit('setLoading', true);
         try {
-            // console.log(state.modelData)
+            console.log(state.modelData)
             let response = null;
             if (state.modelData.id) {
                 // state.modelData._method = 'PUT';
-                response = await Http.put(`/${state.model}/${state.modelData.id}`, state.modelData)
+                response = await Http.put(`api/${state.model}/${state.modelData.id}`, state.modelData)
             } else {
-                response = await Http.post(`/${state.model}`, state.modelData)
+                response = await Http.post(`api/${state.model}`, state.modelData)
             }
+            commit('setSuccess', response.data.message);
             commit('setLoading', false);
             return response;
         } catch (e) {
             commit('setLoading', false);
-            throw error
+            commit('setError', 'Something went wrong');
+            throw e;
         }
     },
 
     delete({commit, state}, item) {
         commit('setLoading', true);
         return new Promise((resolve, reject) => {
-            Http.delete(`/${state.model}/${item}`)
+            Http.delete(`api/${state.model}/${item.item}`)
                 .then(response => {
+                    commit('setSuccess', response.data.message);
                     commit('setLoading', false);
                     resolve(response)
                 })
                 .catch(error => {
-                    commit('setLoading', false)
+                    commit('setLoading', false);
+                    commit('showError', error.response.data.message);
                     reject(error)
                 })
         });
     },
+
+
     resetState({commit}) {
         commit('resetState')
     }
@@ -125,9 +133,7 @@ const mutations = {
     setLoading(state, loading) {
         state.loading = loading
     },
-    setId(state, id) {
-        state.id = id
-    },
+
     setModel(state, model) {
         state.model = model
     },
@@ -146,12 +152,19 @@ const mutations = {
     resetState(state) {
         state = Object.assign(state, initialState())
     },
-    setFilters(state, item) {
-        state.filters = item
-    },
 
     setLinks(state, item) {
         state.links = item;
+    },
+
+    setTotalPage(state, item) {
+        state.serverPagination.totalPage = item;
+    },
+    setSuccess(state,successMsg) {
+        state.showSuccess = successMsg;
+    },
+    setError(state,errMsg) {
+        state.showError = errMsg;
     },
 };
 

@@ -52,12 +52,30 @@
                 </el-main>
             </el-container>
         </el-container>
+        <el-alert
+                :title="showSuccess"
+                type="success"
+                style="margin-top:-20px; position: absolute; right:0; width:300px"
+                show-icon
+                effect="dark"
+                v-if="showSuccess"
+        >
+        </el-alert>
+        <el-alert
+                :title="showError"
+                type="error"
+                style="margin-top:-20px; position: absolute; right:0; width:300px"
+                show-icon
+                effect="dark"
+                v-if="showError">
+        </el-alert>
 
     </div>
 </template>
 
 <script>
 
+    import {mapGetters} from 'vuex';
     export default {
         name: "App",
         data() {
@@ -79,6 +97,9 @@
                     },
                 ]
             }
+        },
+        computed: {
+            ...mapGetters("CommonList", ["showError", "showSuccess"]),
         },
         mounted() {
 

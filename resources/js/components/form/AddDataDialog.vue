@@ -3,6 +3,7 @@
     <el-dialog :visible.sync="formVisible" @close="cancelForm"
                :close-on-click-modal="false"
                :show-close="false"
+               width="60%"
     >
         <span slot="title">
             {{ title }}
@@ -28,7 +29,7 @@
             title: {
                 type:String,
                 default: "Modal Title"
-            }
+            },
         },
         methods: {
             cancelForm(){

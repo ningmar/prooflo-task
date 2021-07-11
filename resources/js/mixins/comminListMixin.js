@@ -40,14 +40,7 @@ export const commonListMixin = {
                 this.$store.commit(`${this.stateName}/setQuery`, value);
             }
         },
-        filters: {
-            get() {
-                return this.$store.state[this.stateName].filters;
-            },
-            set(value) {
-                this.$store.commit(`${this.stateName}/setFilters`, value);
-            }
-        },
+
         modelData: {
             get() {
                 return {};
@@ -77,6 +70,10 @@ export const commonListMixin = {
             this.formDialog = false;
             this.initialData();
         },
+        openEditFormDialog(item) {
+            this.formData = item;
+            this.formDialog = true;
+        },
         buildFormData(formData, data, parentKey) {
             if (
                 data &&
@@ -104,77 +101,58 @@ export const commonListMixin = {
             this.$store.dispatch(`${this.stateName}/resetState`);
         },
 
-        submitFormData(newformagain = false, createFunction = () => {
-        }) {
-            this.$refs.formRef.validate().then(success => {
-                if (success) {
+        submitFormData() {
+            this.errors = [];
+            this.$refs.formRef.validate((valid) => {
+                if (valid) {
                     this.modelData = this.formData;
 
-                    this.createData(newformagain, createFunction);
+                    this.createData();
+                }
+                else {
+                    return false;
                 }
             });
         },
-        createData(newformagain, createFunction) {
+        createData() {
             this.$store
-                .dispatch(`${this.stateName}/store`)
+                .dispatch(`${this.stateName}/create`)
                 .then(res => {
                     this.cancelFormDialog();
                     this.fetchPaged();
-                    this.$q.notify({
-                        message: this.title + this.$t("message.created"),
-                        timeout: 3000,
-                        color: "positive"
-                    });
-                    if (newformagain) {
-                        createFunction();
-                        this.$refs.formRef.reset();
-                    }
                 })
                 .catch(error => {
 
                     if (error.response.status === 422) {
                         this.errors = error.response.data.errors;
+                        //error displaying component yet to make
                     }
-
-                    this.$q.notify({
-                        message: error.response.data.message,
-                        timeout: 3000,
-                        color: "negative"
-                    });
-
                 });
+                setTimeout(() => {
+                    this.$store.commit(`${this.stateName}/setError`, false);
+                    this.$store.commit(`${this.stateName}/setSuccess`, false);
+                },3000);
         },
 
         confirmDelete(item) {
-            this.$q
-                .dialog({
-                    title: this.$t("label.confirm"),
-                    ok: this.$t("button.ok"),
-                    cancel: this.$t("button.cancel"),
-                    message: this.$t("message.delete_title"),
-                    // cancel: true,
-                    persistent: true
-                })
-                .onOk(() => {
-                    // this.selected.push(item);
-                    this.$store
-                        .dispatch(`${this.stateName}/delete`, {item: item})
-                        .then(res => {
-                            this.fetchPaged();
-                            this.selected = [];
-                            this.$q.notify({
-                                message: this.title + this.$t("message.deleted"),
-                                timeout: 3000,
-                                color: "positive"
-                            });
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                })
-                .onCancel(() => {
-                    console.log(">>>> Cancel");
-                });
+
+            this.$confirm('This will permanently delete the data. Continue?', 'Warning', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                // this.selected.push(item);
+                this.$store
+                    .dispatch(`${this.stateName}/delete`, {item})
+                    .then(res => {
+                        this.fetchPaged();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }).catch(() => {
+                console.log(">>>> Cancel");
+            });
         },
 
 

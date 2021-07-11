@@ -30,6 +30,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "EditBtn",
   props: {
@@ -139,10 +140,105 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "User",
-  mixins: [_mixins_comminListMixin__WEBPACK_IMPORTED_MODULE_0__.commonListMixin]
+  data: function data() {
+    return {
+      genders: [{
+        label: 'Male',
+        value: 'MALE'
+      }, {
+        label: 'Female',
+        value: 'FEMALE'
+      }, {
+        label: 'Other',
+        value: 'OTHER'
+      }],
+      pagination: {
+        itemsPerPage: 10,
+        sortBy: ['created_at'],
+        sortDesc: ['true']
+      },
+      rules: {
+        name: [{
+          required: true,
+          message: 'Please input Activity name',
+          trigger: 'blur'
+        }, {
+          min: 3,
+          max: 5,
+          message: 'Length should be 3 to 5',
+          trigger: 'blur'
+        }],
+        email: [{
+          required: true,
+          message: 'Please enter Email',
+          trigger: 'blur'
+        }],
+        password: [{
+          required: true,
+          message: 'Please enter password',
+          trigger: 'blur'
+        }],
+        gender: [{
+          required: true,
+          message: 'Please pick a gender',
+          trigger: 'change'
+        }],
+        dob: [{
+          type: 'date',
+          required: true,
+          message: 'Please pick a time',
+          trigger: 'change'
+        }]
+      }
+    };
+  },
+  mixins: [_mixins_comminListMixin__WEBPACK_IMPORTED_MODULE_0__.commonListMixin],
+  mounted: function mounted() {
+    this.$store.commit("CommonList/setModel", 'users');
+    this.fetchPaged();
+  }
 });
 
 /***/ }),
@@ -200,14 +296,6 @@ var commonListMixin = {
         this.$store.commit("".concat(this.stateName, "/setQuery"), value);
       }
     },
-    filters: {
-      get: function get() {
-        return this.$store.state[this.stateName].filters;
-      },
-      set: function set(value) {
-        this.$store.commit("".concat(this.stateName, "/setFilters"), value);
-      }
-    },
     modelData: {
       get: function get() {
         return {};
@@ -234,6 +322,10 @@ var commonListMixin = {
       this.formDialog = false;
       this.initialData();
     },
+    openEditFormDialog: function openEditFormDialog(item) {
+      this.formData = item;
+      this.formDialog = true;
+    },
     buildFormData: function buildFormData(formData, data, parentKey) {
       var _this = this;
 
@@ -255,75 +347,52 @@ var commonListMixin = {
     submitFormData: function submitFormData() {
       var _this2 = this;
 
-      var newformagain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      var createFunction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-      this.$refs.formRef.validate().then(function (success) {
-        if (success) {
+      this.errors = [];
+      this.$refs.formRef.validate(function (valid) {
+        if (valid) {
           _this2.modelData = _this2.formData;
 
-          _this2.createData(newformagain, createFunction);
+          _this2.createData();
+        } else {
+          return false;
         }
       });
     },
-    createData: function createData(newformagain, createFunction) {
+    createData: function createData() {
       var _this3 = this;
 
-      this.$store.dispatch("".concat(this.stateName, "/store")).then(function (res) {
+      this.$store.dispatch("".concat(this.stateName, "/create")).then(function (res) {
         _this3.cancelFormDialog();
 
         _this3.fetchPaged();
-
-        _this3.$q.notify({
-          message: _this3.title + _this3.$t("message.created"),
-          timeout: 3000,
-          color: "positive"
-        });
-
-        if (newformagain) {
-          createFunction();
-
-          _this3.$refs.formRef.reset();
-        }
       })["catch"](function (error) {
         if (error.response.status === 422) {
-          _this3.errors = error.response.data.errors;
+          _this3.errors = error.response.data.errors; //error displaying component yet to make
         }
-
-        _this3.$q.notify({
-          message: error.response.data.message,
-          timeout: 3000,
-          color: "negative"
-        });
       });
+      setTimeout(function () {
+        _this3.$store.commit("".concat(_this3.stateName, "/setError"), false);
+
+        _this3.$store.commit("".concat(_this3.stateName, "/setSuccess"), false);
+      }, 3000);
     },
     confirmDelete: function confirmDelete(item) {
       var _this4 = this;
 
-      this.$q.dialog({
-        title: this.$t("label.confirm"),
-        ok: this.$t("button.ok"),
-        cancel: this.$t("button.cancel"),
-        message: this.$t("message.delete_title"),
-        // cancel: true,
-        persistent: true
-      }).onOk(function () {
+      this.$confirm('This will permanently delete the data. Continue?', 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(function () {
         // this.selected.push(item);
         _this4.$store.dispatch("".concat(_this4.stateName, "/delete"), {
           item: item
         }).then(function (res) {
           _this4.fetchPaged();
-
-          _this4.selected = [];
-
-          _this4.$q.notify({
-            message: _this4.title + _this4.$t("message.deleted"),
-            timeout: 3000,
-            color: "positive"
-          });
         })["catch"](function (error) {
           console.error(error);
         });
-      }).onCancel(function () {
+      })["catch"](function () {
         console.log(">>>> Cancel");
       });
     },
@@ -502,7 +571,8 @@ var render = function() {
       attrs: {
         visible: _vm.formVisible,
         "close-on-click-modal": false,
-        "show-close": false
+        "show-close": false,
+        width: "60%"
       },
       on: {
         "update:visible": function($event) {
@@ -583,9 +653,108 @@ var render = function() {
             "el-col",
             { attrs: { span: 2, offset: 16 } },
             [
-              _c("el-button", {
-                attrs: { type: "primary", icon: "el-icon-plus", circle: "" },
-                on: { click: _vm.openFormDialog }
+              _c(
+                "el-tooltip",
+                { attrs: { content: "Add New User", placement: "bottom" } },
+                [
+                  _c("el-button", {
+                    attrs: {
+                      type: "primary",
+                      icon: "el-icon-plus",
+                      circle: ""
+                    },
+                    on: { click: _vm.openFormDialog }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-container",
+        [
+          _c(
+            "el-table",
+            { attrs: { data: _vm.all } },
+            [
+              _c("el-table-column", {
+                attrs: { prop: "name", label: "Full Name", width: "140" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { prop: "email", label: "Email", width: "120" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { prop: "mobile_number", label: "Mobile" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { prop: "gender", label: "Gender" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { prop: "dob", label: "Date of Birth" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { prop: "dob", label: "Date of Birth" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { label: "Actions" },
+                scopedSlots: _vm._u([
+                  {
+                    key: "default",
+                    fn: function(scope) {
+                      return [
+                        _c(
+                          "el-tooltip",
+                          {
+                            attrs: { content: "Edit User", placement: "bottom" }
+                          },
+                          [
+                            _c("el-button", {
+                              attrs: { icon: "el-icon-edit", circle: "" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.openEditFormDialog(scope.row)
+                                }
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "el-tooltip",
+                          {
+                            attrs: {
+                              content: "Delete User",
+                              placement: "bottom"
+                            }
+                          },
+                          [
+                            _c("el-button", {
+                              attrs: { icon: "el-icon-delete", circle: "" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.confirmDelete(scope.row.id)
+                                }
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      ]
+                    }
+                  }
+                ])
               })
             ],
             1
@@ -594,14 +763,12 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("el-container"),
-      _vm._v(" "),
       _c(
         "add-data-dialog",
         {
           attrs: {
             "form-visible": _vm.formDialog,
-            title: _vm.formData.id ? "Edit " : "Add New " + "User"
+            title: (_vm.formData.id ? "Edit " : "Add New ") + "User"
           },
           on: { "form-cancel": _vm.cancelFormDialog, save: _vm.submitFormData }
         },
@@ -610,16 +777,37 @@ var render = function() {
             "template",
             { slot: "body" },
             [
+              _vm.errors
+                ? _c(
+                    "div",
+                    _vm._l(_vm.errors, function(error, i) {
+                      return _c("el-alert", {
+                        key: i,
+                        attrs: {
+                          title: error[0],
+                          type: "error",
+                          "show-icon": ""
+                        }
+                      })
+                    }),
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _c(
                 "el-form",
                 {
-                  ref: "form",
-                  attrs: { model: _vm.formData, "label-width": "120px" }
+                  ref: "formRef",
+                  attrs: {
+                    model: _vm.formData,
+                    rules: _vm.rules,
+                    "label-width": "140px"
+                  }
                 },
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "Activity name" } },
+                    { attrs: { label: "Full name *" } },
                     [
                       _c("el-input", {
                         model: {
@@ -636,97 +824,16 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "el-form-item",
-                    { attrs: { label: "Activity zone" } },
+                    { attrs: { label: "Email *" } },
                     [
-                      _c(
-                        "el-select",
-                        {
-                          attrs: { placeholder: "please select your zone" },
-                          model: {
-                            value: _vm.formData.region,
-                            callback: function($$v) {
-                              _vm.$set(_vm.formData, "region", $$v)
-                            },
-                            expression: "formData.region"
-                          }
-                        },
-                        [
-                          _c("el-option", {
-                            attrs: { label: "Zone one", value: "shanghai" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Zone two", value: "beijing" }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    { attrs: { label: "Activity time" } },
-                    [
-                      _c(
-                        "el-col",
-                        { attrs: { span: 11 } },
-                        [
-                          _c("el-date-picker", {
-                            staticStyle: { width: "100%" },
-                            attrs: { type: "date", placeholder: "Pick a date" },
-                            model: {
-                              value: _vm.formData.date1,
-                              callback: function($$v) {
-                                _vm.$set(_vm.formData, "date1", $$v)
-                              },
-                              expression: "formData.date1"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "el-col",
-                        { staticClass: "line", attrs: { span: 2 } },
-                        [_vm._v("-")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "el-col",
-                        { attrs: { span: 11 } },
-                        [
-                          _c("el-time-picker", {
-                            staticStyle: { width: "100%" },
-                            attrs: { placeholder: "Pick a time" },
-                            model: {
-                              value: _vm.formData.date2,
-                              callback: function($$v) {
-                                _vm.$set(_vm.formData, "date2", $$v)
-                              },
-                              expression: "formData.date2"
-                            }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    { attrs: { label: "Instant delivery" } },
-                    [
-                      _c("el-switch", {
+                      _c("el-input", {
+                        attrs: { type: "email" },
                         model: {
-                          value: _vm.formData.delivery,
+                          value: _vm.formData.email,
                           callback: function($$v) {
-                            _vm.$set(_vm.formData, "delivery", $$v)
+                            _vm.$set(_vm.formData, "email", $$v)
                           },
-                          expression: "formData.delivery"
+                          expression: "formData.email"
                         }
                       })
                     ],
@@ -735,86 +842,88 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "el-form-item",
-                    { attrs: { label: "Activity type" } },
-                    [
-                      _c(
-                        "el-checkbox-group",
-                        {
-                          model: {
-                            value: _vm.formData.type,
-                            callback: function($$v) {
-                              _vm.$set(_vm.formData, "type", $$v)
-                            },
-                            expression: "formData.type"
-                          }
-                        },
-                        [
-                          _c("el-checkbox", {
-                            attrs: { label: "Online activities", name: "type" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-checkbox", {
-                            attrs: {
-                              label: "Promotion activities",
-                              name: "type"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("el-checkbox", {
-                            attrs: { label: "Offline activities", name: "type" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-checkbox", {
-                            attrs: {
-                              label: "Simple brand exposure",
-                              name: "type"
-                            }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    { attrs: { label: "Resources" } },
-                    [
-                      _c(
-                        "el-radio-group",
-                        {
-                          model: {
-                            value: _vm.formData.resource,
-                            callback: function($$v) {
-                              _vm.$set(_vm.formData, "resource", $$v)
-                            },
-                            expression: "formData.resource"
-                          }
-                        },
-                        [
-                          _c("el-radio", { attrs: { label: "Sponsor" } }),
-                          _vm._v(" "),
-                          _c("el-radio", { attrs: { label: "Venue" } })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    { attrs: { label: "Activity form" } },
+                    { attrs: { label: "Mobile Number *" } },
                     [
                       _c("el-input", {
-                        attrs: { type: "textarea" },
+                        attrs: { type: "number" },
                         model: {
-                          value: _vm.formData.desc,
+                          value: _vm.formData.mobile_number,
                           callback: function($$v) {
-                            _vm.$set(_vm.formData, "desc", $$v)
+                            _vm.$set(_vm.formData, "mobile_number", $$v)
                           },
-                          expression: "formData.desc"
+                          expression: "formData.mobile_number"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "Date of Birth *" } },
+                    [
+                      _c("el-date-picker", {
+                        staticStyle: { width: "100%" },
+                        attrs: {
+                          type: "date",
+                          placeholder: "Pick a date",
+                          format: "yyyy-MM-dd"
+                        },
+                        model: {
+                          value: _vm.formData.dob,
+                          callback: function($$v) {
+                            _vm.$set(_vm.formData, "dob", $$v)
+                          },
+                          expression: "formData.dob"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "Gender *" } },
+                    [
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "Select" },
+                          model: {
+                            value: _vm.formData.gender,
+                            callback: function($$v) {
+                              _vm.$set(_vm.formData, "gender", $$v)
+                            },
+                            expression: "formData.gender"
+                          }
+                        },
+                        _vm._l(_vm.genders, function(item) {
+                          return _c("el-option", {
+                            key: item.value,
+                            attrs: { label: item.label, value: item.value }
+                          })
+                        }),
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "Password *" } },
+                    [
+                      _c("el-input", {
+                        attrs: {
+                          placeholder: "Please input password",
+                          "show-password": ""
+                        },
+                        model: {
+                          value: _vm.formData.password,
+                          callback: function($$v) {
+                            _vm.$set(_vm.formData, "password", $$v)
+                          },
+                          expression: "formData.password"
                         }
                       })
                     ],

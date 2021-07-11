@@ -3525,6 +3525,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -3583,6 +3590,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "App",
   data: function data() {
@@ -3602,6 +3627,7 @@ __webpack_require__.r(__webpack_exports__);
       }]
     };
   },
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)("CommonList", ["showError", "showSuccess"])),
   mounted: function mounted() {},
   methods: {
     handleOpen: function handleOpen(key, keyPath) {
@@ -3757,19 +3783,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/common */ "./resources/js/store/modules/common.js");
-/* harmony import */ var _modules_notification__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/notification */ "./resources/js/store/modules/notification.js");
 
 
 
-
-vue__WEBPACK_IMPORTED_MODULE_2__.default.use(vuex__WEBPACK_IMPORTED_MODULE_3__.default);
-var store = new vuex__WEBPACK_IMPORTED_MODULE_3__.default.Store({
+vue__WEBPACK_IMPORTED_MODULE_1__.default.use(vuex__WEBPACK_IMPORTED_MODULE_2__.default);
+var store = new vuex__WEBPACK_IMPORTED_MODULE_2__.default.Store({
   modules: {
-    CommonList: _modules_common__WEBPACK_IMPORTED_MODULE_0__.default,
-    Notification: _modules_notification__WEBPACK_IMPORTED_MODULE_1__.default
+    CommonList: _modules_common__WEBPACK_IMPORTED_MODULE_0__.default
   }
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (store);
@@ -3793,12 +3816,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -3815,7 +3832,7 @@ function initialState() {
       page: 1,
       rowsNumber: 0,
       descending: false,
-      itemsPerPage: 25
+      itemsPerPage: 10
     },
     totalNumber: 0,
     filters: {},
@@ -3824,7 +3841,9 @@ function initialState() {
     links: {
       next: null,
       prev: null
-    }
+    },
+    showError: false,
+    showSuccess: false
   };
 }
 
@@ -3849,128 +3868,111 @@ var getters = {
   },
   totalNumber: function totalNumber(state) {
     return state.totalNumber;
+  },
+  showError: function showError(state) {
+    return state.showError;
+  },
+  showSuccess: function showSuccess(state) {
+    return state.showSuccess;
   }
 };
 var actions = {
-  getAll: function getAll(_ref) {
+  fetchPaged: function fetchPaged(_ref) {
+    var commit = _ref.commit,
+        state = _ref.state;
+    commit("setLoading", true);
+    var pagination = state.serverPagination;
+    var query = state.query;
+    return new Promise(function (resolve, reject) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('api/' + state.model + "?page=" + (pagination.page - 1) + "&rowsPerPage=" + pagination.itemsPerPage + "&" + "&query=" + query).then(function (res) {
+        commit("setLoading", false);
+        var response = res.data;
+
+        if (response.data) {
+          commit("setAll", response.data);
+          commit("setTotalNumber", response.meta.total);
+          commit("setTotalPage", response.meta.last_page);
+        }
+
+        resolve(res);
+      })["catch"](function (error) {
+        reject(error);
+      })["finally"](function () {
+        commit("setLoading", false);
+      });
+    });
+  },
+  create: function create(_ref2) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-      var commit, state, pagination, serverParams;
+      var commit, state, response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              commit = _ref.commit, state = _ref.state;
+              commit = _ref2.commit, state = _ref2.state;
               commit('setLoading', true);
-              pagination = state.serverPagination;
-              serverParams = {
-                paginate: true,
-                page: pagination.page,
-                rowsPerPage: pagination.itemsPerPage,
-                query: state.query,
-                sortBy: pagination.sortBy ? pagination.sortBy[0] : null,
-                descending: pagination.sortDesc ? pagination.sortDesc[0] : null,
-                with_role: true
-              };
-              serverParams = _objectSpread(_objectSpread({}, serverParams), state.filters);
-              axios__WEBPACK_IMPORTED_MODULE_1___default().get("/".concat(state.model), {
-                params: serverParams
-              }).then(function (response) {
-                commit('setAll', response.data.data);
-                commit('setTotalNumber', response.data.meta.total);
-                commit('setLinks', response.data.links);
-              })["finally"](function () {
-                commit('setLoading', false);
-              });
+              _context.prev = 2;
+              console.log(state.modelData);
+              response = null;
 
-            case 6:
+              if (!state.modelData.id) {
+                _context.next = 11;
+                break;
+              }
+
+              _context.next = 8;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().put("api/".concat(state.model, "/").concat(state.modelData.id), state.modelData);
+
+            case 8:
+              response = _context.sent;
+              _context.next = 14;
+              break;
+
+            case 11:
+              _context.next = 13;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default().post("api/".concat(state.model), state.modelData);
+
+            case 13:
+              response = _context.sent;
+
+            case 14:
+              commit('setSuccess', response.data.message);
+              commit('setLoading', false);
+              return _context.abrupt("return", response);
+
+            case 19:
+              _context.prev = 19;
+              _context.t0 = _context["catch"](2);
+              commit('setLoading', false);
+              commit('setError', 'Something went wrong');
+              throw _context.t0;
+
+            case 24:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee);
+      }, _callee, null, [[2, 19]]);
     }))();
   },
-  show: function show(_ref2) {
-    var commit = _ref2.commit,
-        state = _ref2.state;
+  "delete": function _delete(_ref3, item) {
+    var commit = _ref3.commit,
+        state = _ref3.state;
     commit('setLoading', true);
     return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_1___default().get("/".concat(state.model, "/").concat(state.id)).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default().delete("api/".concat(state.model, "/").concat(item.item)).then(function (response) {
+        commit('setSuccess', response.data.message);
         commit('setLoading', false);
         resolve(response);
       })["catch"](function (error) {
         commit('setLoading', false);
+        commit('showError', error.response.data.message);
         reject(error);
       });
     });
   },
-  create: function create(_ref3) {
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-      var commit, state, response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              commit = _ref3.commit, state = _ref3.state;
-              commit('setLoading', true);
-              _context2.prev = 2;
-              // console.log(state.modelData)
-              response = null;
-
-              if (!state.modelData.id) {
-                _context2.next = 10;
-                break;
-              }
-
-              _context2.next = 7;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default().put("/".concat(state.model, "/").concat(state.modelData.id), state.modelData);
-
-            case 7:
-              response = _context2.sent;
-              _context2.next = 13;
-              break;
-
-            case 10:
-              _context2.next = 12;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default().post("/".concat(state.model), state.modelData);
-
-            case 12:
-              response = _context2.sent;
-
-            case 13:
-              commit('setLoading', false);
-              return _context2.abrupt("return", response);
-
-            case 17:
-              _context2.prev = 17;
-              _context2.t0 = _context2["catch"](2);
-              commit('setLoading', false);
-              throw error;
-
-            case 21:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, null, [[2, 17]]);
-    }))();
-  },
-  "delete": function _delete(_ref4, item) {
-    var commit = _ref4.commit,
-        state = _ref4.state;
-    commit('setLoading', true);
-    return new Promise(function (resolve, reject) {
-      axios__WEBPACK_IMPORTED_MODULE_1___default().delete("/".concat(state.model, "/").concat(item)).then(function (response) {
-        commit('setLoading', false);
-        resolve(response);
-      })["catch"](function (error) {
-        commit('setLoading', false);
-        reject(error);
-      });
-    });
-  },
-  resetState: function resetState(_ref5) {
-    var commit = _ref5.commit;
+  resetState: function resetState(_ref4) {
+    var commit = _ref4.commit;
     commit('resetState');
   }
 };
@@ -3984,9 +3986,6 @@ var mutations = {
   },
   setLoading: function setLoading(state, loading) {
     state.loading = loading;
-  },
-  setId: function setId(state, id) {
-    state.id = id;
   },
   setModel: function setModel(state, model) {
     state.model = model;
@@ -4006,85 +4005,17 @@ var mutations = {
   resetState: function resetState(state) {
     state = Object.assign(state, initialState());
   },
-  setFilters: function setFilters(state, item) {
-    state.filters = item;
-  },
   setLinks: function setLinks(state, item) {
     state.links = item;
-  }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  namespaced: true,
-  state: initialState,
-  getters: getters,
-  actions: actions,
-  mutations: mutations
-});
-
-/***/ }),
-
-/***/ "./resources/js/store/modules/notification.js":
-/*!****************************************************!*\
-  !*** ./resources/js/store/modules/notification.js ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-var initialState = function initialState() {
-  return {
-    filterDrawer: false,
-    snackbar: {
-      timeout: 3000,
-      color: '',
-      show: false,
-      text: ''
-    }
-  };
-};
-
-var getters = {
-  snackbar: function snackbar(state) {
-    return state.snackbar;
   },
-  filterDrawer: function filterDrawer(state) {
-    return state.filterDrawer;
-  }
-};
-var actions = {
-  resetState: function resetState(_ref) {
-    var commit = _ref.commit;
-    commit('resetState');
-  }
-};
-var mutations = {
-  setSnackbar: function setSnackbar(state, snackbar) {
-    state.snackbar = snackbar;
+  setTotalPage: function setTotalPage(state, item) {
+    state.serverPagination.totalPage = item;
   },
-  showError: function showError(state, text) {
-    state.snackbar = {
-      timeout: 6000,
-      color: "red",
-      show: true,
-      text: text
-    };
+  setSuccess: function setSuccess(state, successMsg) {
+    state.showSuccess = successMsg;
   },
-  toggleFilterDrawer: function toggleFilterDrawer(state) {
-    state.filterDrawer = !state.filterDrawer;
-  },
-  showSuccess: function showSuccess(state, text) {
-    state.snackbar = {
-      timeout: 6000,
-      color: "green darken-3",
-      show: true,
-      text: text
-    };
-  },
-  resetState: function resetState(state) {
-    state = Object.assign(state, initialState());
+  setError: function setError(state, errMsg) {
+    state.showError = errMsg;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -84008,7 +83939,41 @@ var render = function() {
           )
         ],
         1
-      )
+      ),
+      _vm._v(" "),
+      _vm.showSuccess
+        ? _c("el-alert", {
+            staticStyle: {
+              "margin-top": "-20px",
+              position: "absolute",
+              right: "0",
+              width: "300px"
+            },
+            attrs: {
+              title: _vm.showSuccess,
+              type: "success",
+              "show-icon": "",
+              effect: "dark"
+            }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.showError
+        ? _c("el-alert", {
+            staticStyle: {
+              "margin-top": "-20px",
+              position: "absolute",
+              right: "0",
+              width: "300px"
+            },
+            attrs: {
+              title: _vm.showError,
+              type: "error",
+              "show-icon": "",
+              effect: "dark"
+            }
+          })
+        : _vm._e()
     ],
     1
   )

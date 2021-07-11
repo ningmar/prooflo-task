@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Utils\TableDataUtil;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -20,7 +21,7 @@ class UserController extends Controller
     {
         $model = new User();
 
-        $data = TableDataUtil::table($model);
+        $data = TableDataUtil::table($model,['name','email'], \request('query'));
 
         return UserResource::collection($data)
             ->response()
@@ -40,7 +41,7 @@ class UserController extends Controller
             'password' => bcrypt($userRequest->get('password')),
             'mobile_number' => $userRequest->get('mobile_number'),
             'gender' => $userRequest->get('gender'),
-            'dob' => $userRequest->get('dob')
+            'dob' => Carbon::parse($userRequest->get('dob'))->toDateString()
         ]);
 
 
@@ -81,7 +82,7 @@ class UserController extends Controller
             'password' => bcrypt($userRequest->get('password')),
             'mobile_number' => $userRequest->get('mobile_number'),
             'gender' => $userRequest->get('gender'),
-            'dob' => $userRequest->get('dob')
+            'dob' => Carbon::parse($userRequest->get('dob'))->toDateString()
         ]);
 
         return response()->json([
