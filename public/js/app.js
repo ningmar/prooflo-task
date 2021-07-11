@@ -3841,9 +3841,9 @@ function initialState() {
     links: {
       next: null,
       prev: null
-    },
-    showError: false,
-    showSuccess: false
+    } // showError: false,
+    // showSuccess: false,
+
   };
 }
 
@@ -3936,23 +3936,20 @@ var actions = {
               response = _context.sent;
 
             case 14:
-              commit('setSuccess', response.data.message);
               commit('setLoading', false);
               return _context.abrupt("return", response);
 
-            case 19:
-              _context.prev = 19;
+            case 18:
+              _context.prev = 18;
               _context.t0 = _context["catch"](2);
-              commit('setLoading', false);
-              commit('setError', 'Something went wrong');
               throw _context.t0;
 
-            case 24:
+            case 21:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[2, 19]]);
+      }, _callee, null, [[2, 18]]);
     }))();
   },
   "delete": function _delete(_ref3, item) {
@@ -3961,12 +3958,10 @@ var actions = {
     commit('setLoading', true);
     return new Promise(function (resolve, reject) {
       axios__WEBPACK_IMPORTED_MODULE_1___default().delete("api/".concat(state.model, "/").concat(item.item)).then(function (response) {
-        commit('setSuccess', response.data.message);
         commit('setLoading', false);
         resolve(response);
       })["catch"](function (error) {
         commit('setLoading', false);
-        commit('showError', error.response.data.message);
         reject(error);
       });
     });
@@ -4010,13 +4005,13 @@ var mutations = {
   },
   setTotalPage: function setTotalPage(state, item) {
     state.serverPagination.totalPage = item;
-  },
-  setSuccess: function setSuccess(state, successMsg) {
-    state.showSuccess = successMsg;
-  },
-  setError: function setError(state, errMsg) {
-    state.showError = errMsg;
-  }
+  } // setSuccess(state,successMsg) {
+  //     state.showSuccess = successMsg;
+  // },
+  // setError(state,errMsg) {
+  //     state.showError = errMsg;
+  // },
+
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   namespaced: true,
@@ -83875,9 +83870,9 @@ var render = function() {
                                     [
                                       _c("i", { class: item.icon }),
                                       _vm._v(
-                                        "\n                            " +
+                                        "\n                                " +
                                           _vm._s(item.label) +
-                                          "\n                        "
+                                          "\n                            "
                                       )
                                     ]
                                   )
@@ -83904,6 +83899,8 @@ var render = function() {
                 "el-header",
                 { staticStyle: { "text-align": "right", "font-size": "12px" } },
                 [
+                  _c("span", [_vm._v("John Doe")]),
+                  _vm._v(" "),
                   _c(
                     "el-dropdown",
                     [
@@ -83926,9 +83923,7 @@ var render = function() {
                       )
                     ],
                     1
-                  ),
-                  _vm._v(" "),
-                  _c("span", [_vm._v("John Doe")])
+                  )
                 ],
                 1
               ),
@@ -83939,41 +83934,7 @@ var render = function() {
           )
         ],
         1
-      ),
-      _vm._v(" "),
-      _vm.showSuccess
-        ? _c("el-alert", {
-            staticStyle: {
-              "margin-top": "-20px",
-              position: "absolute",
-              right: "0",
-              width: "300px"
-            },
-            attrs: {
-              title: _vm.showSuccess,
-              type: "success",
-              "show-icon": "",
-              effect: "dark"
-            }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.showError
-        ? _c("el-alert", {
-            staticStyle: {
-              "margin-top": "-20px",
-              position: "absolute",
-              right: "0",
-              width: "300px"
-            },
-            attrs: {
-              title: _vm.showError,
-              type: "error",
-              "show-icon": "",
-              effect: "dark"
-            }
-          })
-        : _vm._e()
+      )
     ],
     1
   )

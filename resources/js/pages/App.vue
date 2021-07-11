@@ -36,6 +36,7 @@
 
             <el-container>
                 <el-header style="text-align: right; font-size: 12px">
+                    <span>John Doe</span>
                     <el-dropdown>
                         <i class="el-icon-setting" style="margin-right: 15px"></i>
                         <el-dropdown-menu slot="dropdown">
@@ -44,7 +45,6 @@
                             <el-dropdown-item>Log out</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <span>John Doe</span>
                 </el-header>
 
                 <el-main>
@@ -52,23 +52,23 @@
                 </el-main>
             </el-container>
         </el-container>
-        <el-alert
-                :title="showSuccess"
-                type="success"
-                style="margin-top:-20px; position: absolute; right:0; width:300px"
-                show-icon
-                effect="dark"
-                v-if="showSuccess"
-        >
-        </el-alert>
-        <el-alert
-                :title="showError"
-                type="error"
-                style="margin-top:-20px; position: absolute; right:0; width:300px"
-                show-icon
-                effect="dark"
-                v-if="showError">
-        </el-alert>
+<!--        <el-alert-->
+<!--                :title="showSuccess"-->
+<!--                type="success"-->
+<!--                style="margin-top:-20px; position: absolute; right:0; width:300px"-->
+<!--                show-icon-->
+<!--                effect="dark"-->
+<!--                v-if="showSuccess"-->
+<!--        >-->
+<!--        </el-alert>-->
+<!--        <el-alert-->
+<!--                :title="showError"-->
+<!--                type="error"-->
+<!--                style="margin-top:-20px; position: absolute; right:0; width:300px"-->
+<!--                show-icon-->
+<!--                effect="dark"-->
+<!--                v-if="showError">-->
+<!--        </el-alert>-->
 
     </div>
 </template>

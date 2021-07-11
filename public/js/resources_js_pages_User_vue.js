@@ -365,16 +365,23 @@ var commonListMixin = {
         _this3.cancelFormDialog();
 
         _this3.fetchPaged();
+
+        _this3.$notify({
+          title: 'Success',
+          message: res.data.message,
+          type: 'success'
+        });
       })["catch"](function (error) {
         if (error.response.status === 422) {
-          _this3.errors = error.response.data.errors; //error displaying component yet to make
+          _this3.errors = error.response.data.errors;
         }
-      });
-      setTimeout(function () {
-        _this3.$store.commit("".concat(_this3.stateName, "/setError"), false);
 
-        _this3.$store.commit("".concat(_this3.stateName, "/setSuccess"), false);
-      }, 3000);
+        _this3.$notify({
+          title: 'Error',
+          message: error.response.data.message,
+          type: 'error'
+        });
+      });
     },
     confirmDelete: function confirmDelete(item) {
       var _this4 = this;
@@ -389,8 +396,18 @@ var commonListMixin = {
           item: item
         }).then(function (res) {
           _this4.fetchPaged();
+
+          _this4.$notify({
+            title: 'Success',
+            message: res.data.message,
+            type: 'success'
+          });
         })["catch"](function (error) {
-          console.error(error);
+          _this4.$notify({
+            title: 'Error',
+            message: error.response.data.message,
+            type: 'error'
+          });
         });
       })["catch"](function () {
         console.log(">>>> Cancel");

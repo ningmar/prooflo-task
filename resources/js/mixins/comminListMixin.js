@@ -120,18 +120,24 @@ export const commonListMixin = {
                 .then(res => {
                     this.cancelFormDialog();
                     this.fetchPaged();
+                    this.$notify({
+                        title: 'Success',
+                        message: res.data.message,
+                        type: 'success'
+                    });
                 })
                 .catch(error => {
 
                     if (error.response.status === 422) {
                         this.errors = error.response.data.errors;
-                        //error displaying component yet to make
+
                     }
+                    this.$notify({
+                        title: 'Error',
+                        message: error.response.data.message,
+                        type: 'error'
+                    });
                 });
-                setTimeout(() => {
-                    this.$store.commit(`${this.stateName}/setError`, false);
-                    this.$store.commit(`${this.stateName}/setSuccess`, false);
-                },3000);
         },
 
         confirmDelete(item) {
@@ -146,9 +152,18 @@ export const commonListMixin = {
                     .dispatch(`${this.stateName}/delete`, {item})
                     .then(res => {
                         this.fetchPaged();
+                        this.$notify({
+                            title: 'Success',
+                            message: res.data.message,
+                            type: 'success'
+                        });
                     })
                     .catch(error => {
-                        console.error(error);
+                        this.$notify({
+                            title: 'Error',
+                            message: error.response.data.message,
+                            type: 'error'
+                        });
                     });
             }).catch(() => {
                 console.log(">>>> Cancel");

@@ -21,8 +21,8 @@ function initialState() {
             next: null,
             prev: null
         },
-        showError: false,
-        showSuccess: false,
+        // showError: false,
+        // showSuccess: false,
     }
 }
 
@@ -84,17 +84,15 @@ const actions = {
             console.log(state.modelData)
             let response = null;
             if (state.modelData.id) {
-                // state.modelData._method = 'PUT';
+
                 response = await Http.put(`api/${state.model}/${state.modelData.id}`, state.modelData)
             } else {
                 response = await Http.post(`api/${state.model}`, state.modelData)
             }
-            commit('setSuccess', response.data.message);
+
             commit('setLoading', false);
             return response;
         } catch (e) {
-            commit('setLoading', false);
-            commit('setError', 'Something went wrong');
             throw e;
         }
     },
@@ -104,13 +102,13 @@ const actions = {
         return new Promise((resolve, reject) => {
             Http.delete(`api/${state.model}/${item.item}`)
                 .then(response => {
-                    commit('setSuccess', response.data.message);
+
                     commit('setLoading', false);
                     resolve(response)
                 })
                 .catch(error => {
                     commit('setLoading', false);
-                    commit('showError', error.response.data.message);
+
                     reject(error)
                 })
         });
@@ -160,12 +158,12 @@ const mutations = {
     setTotalPage(state, item) {
         state.serverPagination.totalPage = item;
     },
-    setSuccess(state,successMsg) {
-        state.showSuccess = successMsg;
-    },
-    setError(state,errMsg) {
-        state.showError = errMsg;
-    },
+    // setSuccess(state,successMsg) {
+    //     state.showSuccess = successMsg;
+    // },
+    // setError(state,errMsg) {
+    //     state.showError = errMsg;
+    // },
 };
 
 export default {
